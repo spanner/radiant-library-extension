@@ -1,0 +1,31 @@
+- content_for :page_css do
+  :sass 
+    div#a_header
+      :width 99%
+      div#a_title
+        :width 70%
+        :float left
+      div#a_keywords
+        :width 28%
+        :float right
+    div#content 
+      .form-area 
+        .keywords 
+          .textbox
+            :font-family Georgia, Palatino, "Times New Roman", Times, serif
+            :font-size 200%
+            :width 100%
+            :color #c00
+
+- fields_for :asset, @asset do |fields|
+  #a_header
+    #a_title
+      %p.title
+        %label{:for=>"asset_title"}
+          Title
+        = fields.text_field :title, :class => 'textbox', :maxlength => 100
+    #a_keywords
+      %p.keywords
+        %label{:for=>"asset_keywords"}
+          Tags
+        = fields.text_field :keywords, :class => 'textbox'

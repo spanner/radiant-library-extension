@@ -1,19 +1,21 @@
-# Uncomment this if you reference any of your controllers in activate
-# require_dependency 'application_controller'
+require_dependency 'application_controller'
 
 class LibraryExtension < Radiant::Extension
   version "1.0"
-  description "Describe your extension here"
-  url "http://yourwebsite.com/library"
+  description "Combines paperclipped and taggable to create a general purpose library page"
+  url "http://radiant.spanner.org/library"
   
-  # define_routes do |map|
-  #   map.namespace :admin, :member => { :remove => :get } do |admin|
-  #     admin.resources :library
-  #   end
-  # end
+  extension_config do |config|
+    config.extension 'paperclipped'
+    config.extension 'taggable'
+  end
   
   def activate
-    # admin.tabs.add "Library", "/admin/library", :after => "Layouts", :visibility => [:all]
+    Asset.send :is_taggable                                            # make assets taggable
+    Asset.send :include, LibraryAsset                                  # add a keywords method for likeness with pages
+    Page.send :include, LibraryTags                                    # and a load of new page tags for selecting tags and displaying tagged objects
+    LibraryPage                                                        # page type that reads tags/from/url and prepares paginated lists of matching pages and assets
+    SiteController.send :include, LibrarySiteController                # intervene to catch tag[]= parameters too
   end
   
   def deactivate
