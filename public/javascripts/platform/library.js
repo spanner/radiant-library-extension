@@ -79,7 +79,7 @@ var Captioner = new Class({
   },
   setShownAndHiddenStates: function () {
     this.when_hiding = {'opacity' : 0};
-    this.when_showing = {'opacity' : 0.95};
+    this.when_showing = {'opacity' : 1};
   },
   adopt: function (item) {
     this.item = item;
@@ -120,22 +120,32 @@ var Zoomer = new Class({
     this.parent(new Element('div', {'class' : 'zoomer'}));
     this.image = new Element('img', {'class' : 'zoomed'}).inject(this.container);
     this.caption_holder = new Element('div', {'class' : 'caption'}).inject(this.container);
+
+    this.closer = new Element('a', {'class' : 'close', 'href' : '#'}).set('text', 'close').inject(this.caption_holder);
     this.title = new Element('h4').inject(this.caption_holder);
     this.caption = new Element('p').inject(this.caption_holder);
+    this.text_links = new Element('p', {'class' : 'text_links'}).inject(this.caption_holder);
+    new Element('a', {'class': 'left', 'href': '#'}).set('html', '&larr; previous').inject(this.text_links);
+    new Element('a', {'class': 'download', 'href': '#'}).set('html', '&darr; download').inject(this.text_links);
+    new Element('a', {'class': 'right', 'href': '#'}).set('html', 'next &rarr;').inject(this.text_links);
+    
     this.link_holder = new Element('div', {'class': 'link_holder'}).inject(this.container);
     this.lefter = new Element('a', {'class': 'left', 'href': '#', 'title': 'previous'}).inject(this.link_holder);
     this.downer = new Element('a', {'class': 'download', 'href': '#', 'title': 'download'}).inject(this.link_holder);
     this.righter = new Element('a', {'class': 'right', 'href': '#', 'title': 'next'}).inject(this.link_holder);
-    this.lefter.addEvent('click', this.showPrevious.bindWithEvent(this)); 
-    this.righter.addEvent('click', this.showNext.bindWithEvent(this)); 
-    this.downer.addEvent('click', this.download.bindWithEvent(this)); 
+
+    this.container.getElements('a.left').addEvent('click', this.showPrevious.bindWithEvent(this)); 
+    this.container.getElements('a.right').addEvent('click', this.showNext.bindWithEvent(this)); 
+    this.container.getElements('a.download').addEvent('click', this.download.bindWithEvent(this)); 
+    this.container.getElements('a.close').addEvent('click', this.hide.bindWithEvent(this)); 
+
     this.container.inject(document.body);
   },
   setShownAndHiddenStates: function () { }, // place() is called before showing
   transitionIn: function () { return Fx.Transitions.Back.easeOut; },
   durationIn: function () { return 'normal'; },
   display: function (item) {
-    this.adopt(item);
+    this.item = item;
     new Fx.Tween(this.image, {duration: 'short', onComplete: this.reshow.bind(this)}).start('opacity', 0);
   },
   adopt: function (item) {
@@ -180,10 +190,12 @@ var Zoomer = new Class({
     this.caption.set('text', this.item.caption);
   },
   beforeHiding: function () {
-
+    document.body.removeEvents('click');
   },
   afterShowing: function () {
+    this.link_holder.setStyle('height', this.when_showing.height);
     this.container.tween('height', this.when_showing.height + this.caption_holder.getHeight() + 8);
+    document.body.addEvent('click', this.hide.bind(this));
   },
   showPrevious: function (e) {
     unevent(e);

@@ -57,6 +57,16 @@ div.zoomer div.caption {
   position: relative;
 }
 
+div.zoomer a.close {
+  display: block;
+  float: right;
+  font-family: helvetica, arial, sans-serif;
+  font-weight: bold;
+  font-size: 140%;
+  text-decoration: none;
+  padding-left: 20px;
+}
+
 div.zoomer div.caption h4 {
   font-size: 12px;
   line-height: 1.1;
@@ -68,6 +78,14 @@ div.zoomer div.caption p {
   line-height: 1.1;
   margin: 0;
   color: #afafaf;
+}
+
+div.zoomer div.caption p.text_links {
+  margin-top: 10px;
+}
+
+div.zoomer div.caption p.text_links a {
+  margin-right: 10px;
 }
 
 div.zoomer div.link_holder {
@@ -95,7 +113,7 @@ div.zoomer div.link_holder a.left {
 }
 
 div.zoomer div.link_holder a.left:hover {
-  background: transparent url(/images/gallery/image_left.png) no-repeat left 50px;
+  background: transparent url(/images/gallery/image_left.png) no-repeat left 45%;
 }
 
 div.zoomer div.link_holder a.download {
@@ -104,7 +122,7 @@ div.zoomer div.link_holder a.download {
 }
 
 div.zoomer div.link_holder a.download:hover {
-  background: transparent url(/images/gallery/image_down.png) no-repeat center 50px;
+  background: transparent url(/images/gallery/image_down.png) no-repeat center 45%;
 }
 
 div.zoomer div.link_holder a.right {
@@ -114,5 +132,11 @@ div.zoomer div.link_holder a.right {
 }
 
 div.zoomer div.link_holder a.right:hover {
-  background: transparent url(/images/gallery/image_right.png) no-repeat right 50px;
+  background: transparent url(/images/gallery/image_right.png) no-repeat right 45%;
 }
+
+
+
+
+
+

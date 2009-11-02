@@ -1,4 +1,6 @@
 class LibraryPage < Page
+  include Library::RadiusTags
+  include WillPaginate::ViewHelpers
 
   class RedirectRequired < StandardError
     def initialize(message = nil); super end
@@ -10,6 +12,10 @@ class LibraryPage < Page
   
   def self.sphinx_indexes
     []
+  end
+  
+  def cache?
+    false
   end
   
   def find_by_url(url, live = true, clean = false)
@@ -52,14 +58,40 @@ class LibraryPage < Page
   end
   
   def tagged_pages
-    page = request.params[:page] || 1
-    per_page = request.params[:per_page] || Radiant.Config['library.per_page'] || 20
-    Page.tagged_with(requested_tags).paged(page, per_page)
+    Page.tagged_with(requested_tags).paged(pagination)
+  end
+  
+  def all_pages
+    Page.paginate(:all, pagination)
   end
   
   def tagged_assets
-    page = request.params[:page] || 1
-    per_page = request.params[:per_page] || Radiant.Config['library.per_page'] || 20
-    Asset.tagged_with(requested_tags).paged(page, per_page)
+    Asset.not_furniture.tagged_with(requested_tags).paged(pagination)
   end
+  
+  def all_assets
+    Asset.not_furniture.paginate(:all, pagination)
+  end
+  
+  Asset.known_types.each do |type|
+    define_method "all_#{type.to_s.pluralize}" do
+      Asset.send("#{type.to_s.pluralize}".intern).not_furniture.paged(pagination)
+    end
+    define_method "tagged_#{type.to_s.pluralize}" do
+      Asset.send("#{type.to_s.pluralize}".intern).not_furniture.tagged_with(requested_tags).paged(pagination)
+    end
+    define_method "tagged_non_#{type.to_s.pluralize}" do
+      Asset.send("non_#{type.to_s.pluralize}".intern).not_furniture.tagged_with(requested_tags).paged(pagination)
+    end
+  end
+  
+  def pagination
+    p = request.params[:page]
+    p = 1 if p.blank? || p == 0
+    return {
+      :page => request.params[:page] || 1, 
+      :per_page => Radiant::Config['library.per_page'] || 20
+    }
+  end
+  
 end

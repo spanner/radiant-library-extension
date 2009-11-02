@@ -12,10 +12,9 @@ class LibraryExtension < Radiant::Extension
   
   def activate
     Asset.send :is_taggable                                            # make assets taggable
-    Asset.send :include, LibraryAsset                                  # add a keywords method for likeness with pages
-    Page.send :include, LibraryTags                                    # and a load of new page tags for selecting tags and displaying tagged objects
+    Asset.send :include, Library::TaggedAsset                                # add a keywords method for likeness with pages
     LibraryPage                                                        # page type that reads tags/from/url and prepares paginated lists of matching pages and assets
-    SiteController.send :include, LibrarySiteController                # intervene to catch tag[]= parameters too
+    SiteController.send :include, Library::SiteController              # intervene to catch tag[]= parameters too
   end
   
   def deactivate
