@@ -14,10 +14,6 @@ class LibraryPage < Page
     []
   end
   
-  def cache?
-    false
-  end
-  
   def find_by_url(url, live = true, clean = false)
     url = clean_url(url) if clean
     my_url = self.url
@@ -90,7 +86,7 @@ class LibraryPage < Page
     p = 1 if p.blank? || p == 0
     return {
       :page => request.params[:page] || 1, 
-      :per_page => Radiant::Config['library.per_page'] || 20
+      :per_page => Radiant::Config['library.per_page'] || 40
     }
   end
   
