@@ -1,5 +1,5 @@
 class LibraryPage < Page
-  include Library::RadiusTags
+  include Library::LibraryTags
   include WillPaginate::ViewHelpers
 
   class RedirectRequired < StandardError
@@ -12,6 +12,10 @@ class LibraryPage < Page
   
   def self.sphinx_indexes
     []
+  end
+  
+  def cache?
+    true
   end
   
   def find_by_url(url, live = true, clean = false)
@@ -62,11 +66,11 @@ class LibraryPage < Page
   end
   
   def tagged_assets
-    Asset.not_furniture.tagged_with(requested_tags).paged(pagination)
+    Asset.not_furniture.tagged_with(requested_tags).newest_first.paged(pagination)
   end
   
   def all_assets
-    Asset.not_furniture.paginate(:all, pagination)
+    Asset.not_furniture.newest_first.paginate(:all, pagination)
   end
   
   Asset.known_types.each do |type|

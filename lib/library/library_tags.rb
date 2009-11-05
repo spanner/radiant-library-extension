@@ -1,5 +1,5 @@
 module Library
-  module RadiusTags
+  module LibraryTags
     include Radiant::Taggable
     include ActionView::Helpers::TextHelper
     include ActionView::Helpers::TagHelper
@@ -101,18 +101,6 @@ module Library
                   # at the moment these are only defined for requested_tags
                   # because it's much more streamlined that way.
                   # and because tags:* already gives you most of this functionality for page assets
-
-    desc %{
-      Loops through all the available (non-furniture) assets. Only works on a library page, where it is automatically paginated.
-      (Use r:assets:each if you want all the assets attached to the present page.)
-
-      *Usage:* 
-      <pre><code><r:assets:all>...</r:assets:all></code></pre>
-    }
-    tag "assets:all" do |tag|
-      tag.locals.assets = tag.locals.page.send("all_assets")
-      tag.render('asset_list', tag.attr.dup, &tag.block)
-    end
 
     desc %{
       Displays a standard pagination block for the presently defined asset list. Will_paginate's @class@, @previous_label@,
@@ -217,22 +205,7 @@ module Library
     Asset.known_types.each do |type|
 
       desc %{
-        Loops through all the assets of type #{type}. Only works on a library page, where it is automatically paginated.
-        (Use r:assets:#{type.to_s.pluralize}:each if you want all the #{type} assets attached to the present page.)
-
-        *Usage:* 
-        <pre><code><r:assets:all_#{type.to_s.pluralize}:each>...</r:assets:all_#{type.to_s.pluralize}:each></code></pre>
-      }
-      tag "assets:all_#{type.to_s.pluralize}" do |tag|
-        tag.locals.assets = tag.locals.page.send("all_#{type.to_s.pluralize}")
-        tag.expand
-      end
-      tag "assets:all_#{type.to_s.pluralize}:each" do |tag|
-        tag.render('asset_list', tag.attr.dup, &tag.block)
-      end
-
-      desc %{
-        Lists all the #{type} assets tagged with any of the set of requested tags, in descending order of overlap.
+        Lists all the #{type} assets tagged with all of the set of requested tags.
 
         *Usage:* 
         <pre><code><r:requested_tags:#{type.to_s.pluralize}:each>...</r:requested_tags:#{type.to_s.pluralize}:each></code></pre>
