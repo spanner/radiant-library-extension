@@ -211,7 +211,7 @@ module Library
         <pre><code><r:requested_tags:#{type.to_s.pluralize}:each>...</r:requested_tags:#{type.to_s.pluralize}:each></code></pre>
       }
       tag "requested_tags:#{type.to_s.pluralize}" do |tag|
-        tag.locals.assets = tag.locals.page.send("tagged_#{type.to_s.pluralize}".intern)
+        tag.locals.assets = tag.locals.page.send("tagged_#{type.to_s.pluralize}".intern).newest_first
         tag.expand
       end
       tag "requested_tags:#{type.to_s.pluralize}:each" do |tag|

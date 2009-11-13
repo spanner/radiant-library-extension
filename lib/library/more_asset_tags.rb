@@ -52,6 +52,64 @@ module Library
 
     Asset.known_types.each do |type|
 
+      #### conditional on presence or absence of assets of type...
+      
+      desc %{
+        Expands if any #{type} assets are attached to the page.
+        Note the pluralization: r:assets:if_image tests whether a particular asset is an image file.
+        r:assets:if_images tests whether any images are present.
+
+        *Usage:* 
+        <pre><code><r:assets:if_#{type.to_s.pluralize}>...</r:assets:if_#{type.to_s.pluralize}></code></pre>
+      }
+      tag "assets:if_#{type.to_s.pluralize}" do |tag|
+        raise TagError, "page must be defined for assets:if_#{type.to_s.pluralize} tag" unless tag.locals.page
+        assets = tag.locals.page.assets.send(type.to_s.pluralize.intern)
+        tag.expand if assets.any?
+      end
+
+      desc %{
+        Expands if no #{type} assets are attached to the page.
+        Note the pluralization: r:assets:unless_image tests whether a particular asset is an image file.
+        r:assets:unless_images tests whether any images are present.
+
+        *Usage:* 
+        <pre><code><r:assets:unless_#{type.to_s.pluralize}>...</r:assets:unless_#{type.to_s.pluralize}></code></pre>
+      }
+      tag "assets:unless_#{type.to_s.pluralize}" do |tag|
+        raise TagError, "page must be defined for assets:unless_#{type.to_s.pluralize} tag" unless tag.locals.page
+        assets = tag.locals.page.assets.send(type.to_s.pluralize.intern)
+        tag.expand unless assets.any?
+      end
+      
+      desc %{
+        Expands if any non-#{type} assets are attached to the page.
+        Note the pluralization: r:assets:if_non_image tests whether a particular asset is not an image file.
+        r:assets:if_non_images tests whether any non-images are present.
+
+        *Usage:* 
+        <pre><code><r:assets:if_non_#{type.to_s.pluralize}>...</r:assets:if_non_#{type.to_s.pluralize}></code></pre>
+      }
+      tag "assets:if_non_#{type.to_s.pluralize}" do |tag|
+        raise TagError, "page must be defined for assets:if_non_#{type.to_s.pluralize} tag" unless tag.locals.page
+        assets = tag.locals.page.assets.send("non_#{type.to_s.pluralize}".intern)
+        tag.expand if assets.any?
+      end
+
+      desc %{
+        Expands if no non-#{type} assets are attached to the page.
+        Note the pluralization: r:assets:unless_non_image tests whether a particular asset is not an image file.
+        r:assets:unless_non_images tests whether any non-images are present.
+
+        *Usage:* 
+        <pre><code><r:assets:unless_non_#{type.to_s.pluralize}>...</r:assets:unless_non_#{type.to_s.pluralize}></code></pre>
+      }
+      tag "assets:unless_non_#{type.to_s.pluralize}" do |tag|
+        raise TagError, "page must be defined for assets:unless_non_#{type.to_s.pluralize} tag" unless tag.locals.page
+        assets = tag.locals.page.assets.send("non_#{type.to_s.pluralize}".intern)
+        tag.expand unless assets.any?
+      end
+
       #### page-attached assets by type
 
       tag "assets:#{type.to_s.pluralize}" do |tag|
@@ -74,9 +132,9 @@ module Library
         Displays the first attached asset of type #{type}.
 
         *Usage:* 
-        <pre><code><r:assets:first_#{type.to_s}>...</r:assets:first_#{type.to_s}></code></pre>
+        <pre><code><r:assets:first_#{type}>...</r:assets:first_#{type}></code></pre>
       }
-      tag "assets:first_#{type.to_s}" do |tag|
+      tag "assets:first_#{type}" do |tag|
         raise TagError, "page must be defined for assets:first_#{type} tag" unless tag.locals.page
         assets = tag.locals.page.assets.send(type.to_s.pluralize.intern)
         if assets.any?
@@ -167,6 +225,7 @@ module Library
     }    
     tag "assets:illustration" do |tag|
       options = tag.attr.dup
+      options[:size] ||= 'illustration'
       asset = find_asset(tag, options)
       if asset.image?
         result = %{<div class="illustration">}
