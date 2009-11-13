@@ -225,7 +225,7 @@ module Library
     }    
     tag "assets:illustration" do |tag|
       options = tag.attr.dup
-      options[:size] ||= 'illustration'
+      options['size'] ||= 'illustration'
       tag.locals.asset = find_asset(tag, options)
       if tag.locals.asset.image?
         result = %{<div class="illustration">}
