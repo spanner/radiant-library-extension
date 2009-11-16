@@ -75,13 +75,13 @@ class LibraryPage < Page
   
   Asset.known_types.each do |type|
     define_method "all_#{type.to_s.pluralize}" do
-      Asset.send("#{type.to_s.pluralize}".intern).not_furniture.paged(pagination)
+      Asset.send("#{type.to_s.pluralize}".intern).not_furniture.newest_first.paged(pagination)
     end
     define_method "tagged_#{type.to_s.pluralize}" do
-      Asset.send("#{type.to_s.pluralize}".intern).not_furniture.tagged_with(requested_tags).paged(pagination)
+      Asset.send("#{type.to_s.pluralize}".intern).not_furniture.newest_first.tagged_with(requested_tags).paged(pagination)
     end
     define_method "tagged_non_#{type.to_s.pluralize}" do
-      Asset.send("non_#{type.to_s.pluralize}".intern).not_furniture.tagged_with(requested_tags).paged(pagination)
+      Asset.send("non_#{type.to_s.pluralize}".intern).not_furniture.newest_first.tagged_with(requested_tags).paged(pagination)
     end
   end
   
