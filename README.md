@@ -4,9 +4,7 @@ This is a gallery/library displayer. It combines [paperclipped](http://github.co
 
 ## Status 
 
-Brand new but in use in the world. I've just put this together now out of a couple of other extensions. Most of the code comes from the now-defunct `paperclipped_taggable`, but I've consolidated radius tags that used to be in several places and added some pagination control.
-
-It's fairly simple, but the interface is still settling down.
+Fairly mature and in use in the world. I've consolidated radius tags that used to be in several places and added some pagination control. It's fairly simple, but the interface is still settling down.
 
 ## Requirements
 
@@ -32,7 +30,7 @@ You need to make sure that paperclipped and taggable load before this does. Mult
   
 ## Examples
 
-The migration will create a sample image library page for you. You will probably want to edit it to add your layout stylesheets and to change the thumbnail sizes it uses for the image list and the preview zoom.
+See `EXAMPLES.md` for some sample layout and page code.
 
 ## Library pages
 
@@ -123,6 +121,7 @@ You can use all the usual page and asset tags, and also:
 	<r:crumbed_link />
 	
 which I find useful in a list where page names are ambiguous.
+
 
 ## Author and copyright
 
