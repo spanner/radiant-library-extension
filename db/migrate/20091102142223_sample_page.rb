@@ -1,5 +1,10 @@
 class SamplePage < ActiveRecord::Migration
   def self.up
+    if defined? SphinxSearchExtension
+      ThinkingSphinx.define_indexes = false 
+      ThinkingSphinx.updates_enabled = false 
+      ThinkingSphinx.deltas_enabled = false 
+    end
     
     library_layout = Layout.create :name => '_Library', :content => <<-EO
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
@@ -36,7 +41,7 @@ class SamplePage < ActiveRecord::Migration
 <r:assets:pagination entry_name="image" with_summary="true" />
     EO
 
-    library_page = Page.create :title => '_Library', :class_name => 'LibraryPage', :slug => 'sample_library', :breadcrumb => 'Library', :layout => library_layout, :parent => Page.find_by_parent_id(nil)
+    library_page = Page.create :title => 'Library', :class_name => 'LibraryPage', :slug => 'sample_library', :breadcrumb => 'Library', :layout => library_layout, :parent => Page.find_by_parent_id(nil)
 
     library_page.parts.create :name => 'body', :content => <<-EO
 <r:unless_requested_tags>
