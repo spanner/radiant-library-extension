@@ -532,64 +532,7 @@ module Library
       end
       result
     end
-
-    # page-candy: displaying sets of assets in a stylable way
-    # all of these tags require that a set of assets is in context.
   
-    desc %{ 
-      Presents a standard marginal gallery block suitable for turning unobtrusively into a rollover or lightbox gallery. 
-      We need to be able to work out a collection of assets: that can be defined already (eg by assets:all) or come from the current page.
-      Default preview size is 'large' and thumbnail size 'thumbnail' but you can specify any of your asset sizes.
-    
-      *Usage:*
-      <pre><code>
-        <r:assets:images>
-          <r:assets:minigallery [size="..."] [thumbnail_size="..."] [tags="one,or,more,tags"] />
-        </r:assets:images>
-      </code></pre>
-
-    }
-    tag 'assets:minigallery' do |tag|
-      options = tag.attr.dup.symbolize_keys
-      raise TagError, "asset collection must be available for assets:minigallery tag" unless tag.locals.assets or tag.locals.page or tag.attr[:tags]
-      if options[:tags] && tags = Tag.from_list(options[:tags])
-        tag.locals.assets = Asset.images.from_all_tags(tags)
-      else
-        tag.locals.assets = tag.locals.page.assets
-      end
-      tag.locals.assets.images.to_a     # because we can't let empty? trigger a call to count
-
-      unless tag.locals.assets.empty?
-        size = tag.attr['size'] || 'illustration'
-        thumbsize = tag.attr['thumbnail_size'] || 'icon'
-        result = ""
-        result << %{
-  <div class="minigallery">}
-        tag.locals.asset = tag.locals.assets.first
-        result << tag.render('assets:image', {'size' => size})
-        result << %{
-    <p class="caption">#{tag.render('assets:caption')}</p>
-    <ul class="thumbnails">}
-        if tag.locals.assets.size > 1
-          tag.locals.assets.each do |asset|
-            tag.locals.asset = asset
-            result << %{
-      <li class="thumbnail">
-        <a href="#{tag.render('assets:url', 'size' => 'illustration')}" title="#{asset.caption}" id="thumbnail_#{asset.id}">
-          }
-            result << tag.render('assets:image', {'size' => thumbsize, 'alt' => asset.title})
-            result << %{
-        </a>
-      </li>}
-          end
-        end
-        result << %{
-    </ul>
-  </div>}
-        result
-      end
-    end
-
     desc %{ 
       Presents a tag cloud built from the current set of assets. If none is defined, we show a cloud for the whole asset set.
     

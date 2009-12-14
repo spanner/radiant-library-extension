@@ -1,12 +1,12 @@
 module Library
   module TaggedAsset
-
-    # not much to see here: just keeping compatibility with page tags
-    # so as to present the same interface
   
     def self.included(base)
 
       base.class_eval {
+        named_scope :furniture, {:conditions => 'assets.furniture = 1'}
+        named_scope :not_furniture, {:conditions => 'assets.furniture = 0 or assets.furniture is null'}
+        
         extend TaggablePage::ClassMethods
         include TaggablePage::InstanceMethods
       }
@@ -15,8 +15,10 @@ module Library
     module ClassMethods
     end
 
-
     module InstanceMethods
+
+      # just keeping compatibility with page tags
+      # so as to present the same interface
 
       def keywords 
         self.attached_tags.map {|t| t.title}.join(', ')
@@ -26,7 +28,7 @@ module Library
         self.attached_tags = Tag.from_list(somewords)
       end
     
-      def keywords_before_type_cast   # necessary for form_helper
+      def keywords_before_type_cast   # called by form_helper
         keywords
       end
 
