@@ -6,7 +6,8 @@ module Library
       base.class_eval {
         named_scope :furniture, {:conditions => 'assets.furniture = 1'}
         named_scope :not_furniture, {:conditions => 'assets.furniture = 0 or assets.furniture is null'}
-        
+        named_scope :newest_first, { :order => 'created_at DESC'}
+
         extend TaggablePage::ClassMethods
         include TaggablePage::InstanceMethods
       }

@@ -69,6 +69,18 @@ module Library
       end
 
       desc %{
+        Expands if more than one #{type} asset is attached to the page.
+
+        *Usage:* 
+        <pre><code><r:assets:if_many_#{type.to_s.pluralize}>...</r:assets:if_many_#{type.to_s.pluralize}></code></pre>
+      }
+      tag "assets:if_many_#{type.to_s.pluralize}" do |tag|
+        raise TagError, "page must be defined for assets:if_many_#{type.to_s.pluralize} tag" unless tag.locals.page
+        assets = tag.locals.page.assets.send(type.to_s.pluralize.intern)
+        tag.expand if assets.length > 1
+      end
+
+      desc %{
         Expands if no #{type} assets are attached to the page.
         Note the pluralization: r:assets:unless_image tests whether a particular asset is an image file.
         r:assets:unless_images tests whether any images are present.

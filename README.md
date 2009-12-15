@@ -24,9 +24,9 @@ As usual:
 	
 ## Configuration
 
-You need to make sure that paperclipped and taggable load before this does. Multi_site too, if you're using that. This is the sequence I have:
+You need to make sure that paperclipped and taggable load before this does. Multi_site too, if you're using that, and anything that extends paperclipped. This is the sequence I have:
 
-	config.extensions = [ :share_layouts, :multi_site, :taggable, :reader, :reader_group, :paperclipped, :all ]
+	config.extensions = [ :share_layouts, :multi_site, :taggable, :reader, :reader_group, :paperclipped, :all, :library ]
   
 ## Examples
 

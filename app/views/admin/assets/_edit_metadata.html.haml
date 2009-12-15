@@ -14,3 +14,7 @@
             = fields.check_box :furniture
             = fields.label :furniture, "Site furniture? (not shown in lists and galleries)"
       = render_region :extended_metadata
+  %p
+    %small
+      %a{ :id => "more-extended-metadata", :href => "#", :onclick => "#{toggle_javascript_for('extended-metadata')}; return false;" } More
+      %a{ :id => "less-extended-metadata", :href => "#", :onclick => "#{toggle_javascript_for('extended-metadata')}; return false;", :style => "display: none" } Less
