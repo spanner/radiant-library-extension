@@ -23,6 +23,10 @@ class LibraryPage < Page
     my_url = self.url
     return false unless url =~ /^#{Regexp.quote(my_url)}(.*)/
     tags = $1.split('/')
+    if slug_child = children.find_by_slug(tags[0])
+      found = slug_child.find_by_url(url, live, clean)
+      return found if found
+    end
     remove_tags, add_tags = tags.partition{|t| t.first == '-'}
     add_request_tags(add_tags)
     remove_request_tags(remove_tags)
