@@ -57,42 +57,34 @@ class LibraryPage < Page
   # this isn't very pleasing but it's the best way to let the controller know 
   # of our real address once tags have been added and removed.
   
-  def tagged_url(tags = requested_tags)
-    clean_url( url + '/' + tags.uniq.map(&:clean_title).to_param )
+  def url_with_tags(tags = requested_tags)
+    clean_url( url_without_tags + '/' + tags.uniq.map(&:clean_title).to_param )
   end
+  alias_method_chain :url, :tags
   
   def tagged_pages
-    Page.tagged_with(requested_tags).paged(pagination)
+    Page.tagged_with(requested_tags)
   end
   
   def all_pages
-    Page.paginate(:all, pagination)
+    Page.all
   end
   
   def tagged_assets
-    Asset.not_furniture.tagged_with(requested_tags).newest_first.paged(pagination)
+    Asset.not_furniture.tagged_with(requested_tags).newest_first
   end
   
   def all_assets
-    Asset.not_furniture.newest_first.paginate(:all, pagination)
+    Asset.not_furniture.newest_first
   end
   
   Asset.known_types.each do |type|
     define_method "tagged_#{type.to_s.pluralize}" do
-      Asset.send("#{type.to_s.pluralize}".intern).not_furniture.newest_first.tagged_with(requested_tags).paged(pagination)
+      Asset.send("#{type.to_s.pluralize}".intern).not_furniture.newest_first.tagged_with(requested_tags)
     end
     define_method "tagged_non_#{type.to_s.pluralize}" do
-      Asset.send("non_#{type.to_s.pluralize}".intern).not_furniture.newest_first.tagged_with(requested_tags).paged(pagination)
+      Asset.send("non_#{type.to_s.pluralize}".intern).not_furniture.newest_first.tagged_with(requested_tags)
     end
-  end
-  
-  def pagination
-    p = request.params[:page]
-    p = 1 if p.blank? || p == 0
-    return {
-      :page => request.params[:page] || 1, 
-      :per_page => Radiant::Config['library.per_page'] || 40
-    }
   end
   
 end

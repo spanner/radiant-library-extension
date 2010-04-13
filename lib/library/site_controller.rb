@@ -10,7 +10,7 @@ module Library
           page = find_page_without_tags(url)
           return page unless page.is_a?(LibraryPage)
           page.add_request_tags(Tag.in_this_list(params[:tag])) if params[:tag]      
-          raise LibraryPage::RedirectRequired, page.tagged_url unless page.tagged_url == url     # to handle removal of tags and ensure consistent addressing. should also allow cache hit.
+          raise LibraryPage::RedirectRequired, page.url unless page.url == url     # to handle removal of tags and ensure consistent addressing. should also allow cache hit.
           page
         end
         alias_method_chain :find_page, :tags

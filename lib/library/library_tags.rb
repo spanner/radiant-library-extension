@@ -102,31 +102,6 @@ module Library
                   # because it's much more streamlined that way.
                   # and because tags:* already gives you most of this functionality for page assets
 
-    desc %{
-      Displays a standard pagination block for the presently defined asset list. Will_paginate's @class@, @previous_label@,
-      @next_label@, @inner_window@, @outer_window@, and @separator@ attributes are passed through.
-
-      *Usage:* 
-      <pre><code><r:assets:pagination /></code></pre>
-    }
-    tag "assets:pagination" do |tag|
-      renderer = Library::LinkRenderer.new(tag)
-      options = {}
-      result = []
-      entry_name = tag.attr['entry_name'] || 'item'
-      [:class, :previous_label, :next_label, :inner_window, :outer_window, :separator, :per_page].each do |a|
-        options[a] = tag.attr[a.to_s] unless tag.attr[a.to_s].blank?
-      end
-      result << %{<div class="pagination">}
-      result << will_paginate(tag.locals.assets, options.merge(:renderer => renderer, :container => false))
-      if tag.attr['with_summary'] != "false"
-        result << %{<span class="summary">}
-        result << page_entries_info(tag.locals.assets, :entry_name => entry_name)         
-        result << %{</span>}
-      end
-      result << %{</div>}
-      result
-    end
 
     desc %{
       Lists all the pages tagged with the requested tags, in descending order of overlap.
@@ -344,10 +319,10 @@ module Library
       <pre><code><r:tags:assets:each>...</r:tags:assets:each></code></pre>
     }
     tag 'tags:assets' do |tag|
-      tag.locals.assets ||= _asset_finder(tag)
       tag.expand
     end
     tag 'tags:assets:each' do |tag|
+      tag.locals.assets ||= _asset_finder(tag)
       tag.render('asset_list', tag.attr.dup, &tag.block)
     end
 
@@ -496,7 +471,7 @@ module Library
       text = tag.double? ? tag.expand : tag.render('tag:name')
 
       if tag.locals.page.is_a?(LibraryPage)
-        href = tag.locals.page.tagged_url(tag.locals.page.requested_tags - [tag.locals.tag])
+        href = tag.locals.page.url(tag.locals.page.requested_tags - [tag.locals.tag])
       elsif page_url = (options.delete('tagpage') || Radiant::Config['tags.page'])
         href = clean_url(page_url + '/-' + tag.locals.tag.clean_title)
       else 
@@ -548,7 +523,7 @@ module Library
       elsif taglist = options.delete('tags')
         _assets_for_tags(taglist)
       else
-        Asset.find(:all)
+        Asset.all
       end
       limit = options.delete('limit') || 100
       if assets.any?
@@ -568,7 +543,7 @@ module Library
     end
 
     def _get_all_tags(tag)
-      Tag.find(:all)
+      Tag.all
     end
 
     def _get_top_tags(tag)
@@ -592,39 +567,9 @@ module Library
       if tags.any?
         Tag.coincident_with(tags)
       else
-        Tag.find(:all)
+        Tag.all
       end
     end
-  
-    def _pagination_for(list, plural='')
-      pagination = will_paginate list, :separator => %{<span class="separator">|</span>}, :container => false
-      %{
-        <div class="pagination">
-          <span class="pagination_summary">
-            Showing #{_pagination_summary(list, plural)}
-          </span>
-          #{pagination}
-        </div>
-      }
-    end
-  
-    def _pagination_summary(list, plural='')
-      total = list.total_entries
-      if total == 1
-        if plural.blank?
-          "one"
-        else
-          %{one #{plural.singularize}}
-        end
-      elsif list.current_page == 1 && total < list.per_page
-        %{all #{total} #{plural}}
-      else
-        start = list.offset + 1
-        finish = ((list.offset + list.per_page) < list.total_entries) ? list.offset + list.per_page : list.total_entries
-        %{#{start} to #{finish} of #{total} #{plural}}
-      end
-    end
-  
   end
 end
 

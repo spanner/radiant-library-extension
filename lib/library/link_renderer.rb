@@ -11,7 +11,7 @@ module Library
     def page_link(page, text, attributes = {})
       linkclass = %{ class="#{attributes[:class]}"} if attributes[:class]
       linkrel = %{ rel="#{attributes[:rel]}"} if attributes[:rel]
-      %Q{<a href="#{@tag.locals.page.tagged_url}?page=#{page}"#{linkrel}#{linkclass}>#{text}</a>}
+      %Q{<a href="#{@tag.locals.page.url}?page=#{page}"#{linkrel}#{linkclass}>#{text}</a>}
     end
 
     def page_span(page, text, attributes = {})
