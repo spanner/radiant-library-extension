@@ -4,6 +4,41 @@ module Library
   
     class TagError < StandardError; end
 
+    ############### assets: tags for displaying tags and relatives when we have an asset
+                  # similar tags already exist for pages
+  
+    desc %{
+      Cycles through all tags attached to present asset.
+    
+      *Usage:* 
+      <pre><code><r:assets:tags><r:tag:title /></r:assets:tags></code></pre>
+    }    
+    tag 'assets:tags' do |tag|
+      raise TagError, "asset must be defined for asset:tags tag" unless tag.locals.asset
+      tag.locals.tags = tag.locals.asset.tags
+      tag.expand
+    end
+    tag 'assets:tags:each' do |tag|
+      tag.render('tags:each', tag.attr.dup, &tag.block)
+    end
+
+    desc %{
+      Lists all the assets similar to this asset (based on its tagging), in descending order of relatedness.
+    
+      *Usage:* 
+      <pre><code><r:related_assets:each>...</r:related_assets:each></code></pre>
+    }
+    tag 'related_assets' do |tag|
+      raise TagError, "asset must be defined for related_assets tag" unless tag.locals.asset
+      tag.locals.assets = tag.locals.asset.related_assets
+      tag.expand
+    end
+    tag 'related_assets:each' do |tag|
+      tag.render('assets:each', tag.attr.dup, &tag.block)
+    end
+
+    ############### extra asset fields
+
     [:copyright].each do |method|
       desc %{
         Expands if the asset has a #{method} notice.
@@ -35,6 +70,8 @@ module Library
         asset.send(method) rescue nil
       end
     end
+
+    ############### useful shorthands
 
     desc %{
       Renders an illustration block for the asset, with image and caption.

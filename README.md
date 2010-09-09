@@ -11,9 +11,6 @@ Fairly mature and in use in the world. I've consolidated radius tags that used t
 * Radiant 0.8.1
 * [paperclipped](http://github.com/spanner/paperclipped) (currently, requires our fork) and [taggable](http://github.com/spanner/radiant-taggable-extension) extensions
 
-The sample gallery provided uses mootools because I like it.
-It's all done unobtrusively - all we put on the page is lists - so you could easily replace it with a slimbox or some other library.
-
 ## Installation
 
 As usual:
@@ -38,71 +35,37 @@ The **LibraryPage** page type is a handy way of catching tag parameters and disp
 
 	/archive/lasagne/chips/pudding
 	
-and the right tags will be retrieved, if they exist, and made available to the page, where you can display them using the luxurious assortment of tags described below.
+and the right tags will be retrieved, if they exist. This offers a very easy way to make a proper faceted browser.
 
 ## Radius tags
 
-This extension adds a lot more radius tags to those already defined by taggable. For all the page tags and tag pages there are asset equivalents, and we add a lot more for retrieving sets of tags and for retrieving pages and assets from those sets.
+This extension used to define a ridiculous profusion of tags, so I have slimmed it ruthlessly to make likely uses easy rather than to make unlikely uses possible.
 
-### Tag sets
+### Library page tags
 
-* **requested_tags** is the list of tags found in the request url (and can only be used on a library page)
-* **coincident_tags** is the list of tags that occur alongside all of the requested tags and can therefore be used to to narrow the result set further
-* **all_tags** is just a list of all the available tags
-* **top_tags** is a list of the most popular tags, with incidence and cloud bands
-* **page_tags** is the list of tags attached to the present page (and essentially the same as just calling r:tags, but sometimes useful)
+The library tags now focus on two tasks: choosing a set of tags and displaying a set of matching objects.
 
-Each of these sets can be displayed as a list, cloud or sentence in the usual ways with eg:
+	<r:library:tags />
+	<r:library:tags:each>...</r:library:tags:each>
+	
+Displays a list of the tags available. If any tags have been requested, this will show the list of coincident tags (that can be used to limit the result set further). If not it shows all the available tags. If a `for` attribute is set:
 
-	<r:requested_tags:list />
-	<r:coincident_tags:cloud />
-	<r:page_tags:summary />
+	<r:library:tags for="images" />
+	<r:library:tags for="pages" />
 
-and each of them has conditional versions:
+Then we show only the set of tags attached to any object of that kind.
 
-	<r:if_requested_tags><r:coincident_tags:cloud /></r:if_requested_tags>
-	<r:unless_requested_tags><r:all_tags:cloud /></r:unless_requested_tags>
+	<r:library:requested_tags />
+	<r:library:requested_tags:each>...</r:library:requested_tags:each>
+	
+Displays the currently-limiting set of tags.
 
-### Requested tags
+	<r:library:pages:each>...</r:library:pages:each>
+	<r:library:assets:each>...</r:library:assets:each>
+	<r:library:images:each>...</r:library:images:each>
+	<r:library:videos:each>...</r:library:videos:each>
 
-The main point of a library page is to display pages and assets based on requested tags, and there are a lot of radius tags for that purpose:
-
-* `requested_tags:pages:each`
-* `requested_tags:assets:each`
-* `requested_tags:images:each`
-* `requested_tags:non_images:each`
-* `requested_tags:if_images`
-* `requested_tags:if_videos`
-
-and all the permutations those suggest. Within them you can present pages and assets in the usual ways.
-
-### Coincident tags
-
-Given a set of requested tags, the `coincident_tags` list is the set of tags which can be used to further narrow the result set. It's used to present a faceted search. Eg:
-
-* Page 1: charmed, strange, purple
-* Page 2: charmed, strange, green
-* Page 3: charmed, green
-* Page 4: charmed, normal, green
-
-If the viewer requests 'charmed', she will see a list of all four pages. The coincident tags are those tags which co-occur with all the requested tags, which in this case is 'strange, purple, green, normal', and their usefulness is that any of them can be used to narrow the result set. If she adds 'strange' to her requested tags list, probably by clicking on it in a cloud, then the result set shrinks to pages 1 and 2, and the coincident tag set shrinks to 'purple' and 'green', either of which could be used to narrow the set down to a single result. Here's a simple faceted image search:
-
-	<r:if_requested_tags>
-		<p>Images associated with <r:requested_tags:summary />.</p>
-		<r:requested_tags:images:each><r:asset:link /></r:requested_tags:images:each>
-		<r:coincident_tags:cloud />
-	<r:if_requested_tags>
-	<r:unless_requested_tags>
-		<r:image_tags:cloud />
-	</r:unless_requested_tags>
-
-and there's an interface shortcut to make common use more readable:
-
-	<r:requested_tags:summary />
-	<r:requested_tags:images:each>...</r:requested_tags:images:each>
-	<r:tag_chooser />
-
-All this is helped along a bit by `r:requested_tags_summary`, which puts a link around each tag that will remove it from the requested set.
+Display the list of (that kind of) objects associated with the current tag set.
 
 ### Tag assets and asset tags
 
@@ -111,10 +74,9 @@ All the page tags have asset equivalents:
 	<r:tags:assets:each tags="foo, bar">...</r:tags:assets:each>
 	<r:related_assets:each>...</r:related_assets:each>
 
-and for any `*asset*` tag you can substitute an asset type (or negated type), so these also work:
+and for any `*asset*` tag you can substitute an asset type, so this also works:
 
 	<r:related_images:each>...</r:related_images:each>
-	<r:tags:non_audios:each>...</r:tags:non_audios:each>
 
 You can use all the usual page and asset tags, and also:
 

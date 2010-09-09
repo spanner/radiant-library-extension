@@ -16,6 +16,7 @@ class LibraryExtension < Radiant::Extension
     LibraryPage                                                        # page type that reads tags/from/url and prepares paginated lists of matching pages and assets
     SiteController.send :include, Library::SiteController              # intervene to catch tag[]= parameters too
     Page.send :include, Library::MoreAssetTags
+    Page.send :include, Library::MoreTagTags
   end
   
   def deactivate

@@ -10,10 +10,6 @@ class LibraryPage < Page
   
   attr_accessor :requested_tags, :strict_match
   
-  def self.sphinx_indexes
-    []
-  end
-  
   def cache?
     true
   end
@@ -71,19 +67,16 @@ class LibraryPage < Page
   end
   
   def tagged_assets
-    Asset.not_furniture.tagged_with(requested_tags).newest_first
+    Asset.tagged_with(requested_tags)
   end
   
   def all_assets
-    Asset.not_furniture.newest_first
+    Asset.all
   end
   
   Asset.known_types.each do |type|
     define_method "tagged_#{type.to_s.pluralize}" do
-      Asset.send("#{type.to_s.pluralize}".intern).not_furniture.newest_first.tagged_with(requested_tags)
-    end
-    define_method "tagged_non_#{type.to_s.pluralize}" do
-      Asset.send("non_#{type.to_s.pluralize}".intern).not_furniture.newest_first.tagged_with(requested_tags)
+      Asset.send("#{type.to_s.pluralize}".intern).tagged_with(requested_tags)
     end
   end
   
