@@ -4,16 +4,24 @@ This is a gallery/library displayer. It combines [paperclipped](http://github.co
 
 ## Status 
 
-Fairly mature and in use in the world. I've consolidated radius tags that used to be in several places and added some pagination control. It's fairly simple, but the interface is still settling down.
+Fairly mature and in use in the world. I've just rationalised the radius tags to support what has emerged as the likely uses, so the interface is now reliable.
+
+We're now using built-in pagination and gem-based configuration, so radiant 0.9 is required.
+
+The requirement for our fork of paperclipped should soon disappear.
 
 ## Requirements
 
-* Radiant 0.8.1
+* Radiant 0.9
 * [paperclipped](http://github.com/spanner/paperclipped) (currently, requires our fork) and [taggable](http://github.com/spanner/radiant-taggable-extension) extensions
 
 ## Installation
 
 As usual:
+
+	./script/extension install library
+
+or some variation on:
 
     git submodule add git://github.com/spanner/radiant-library-extension.git vendor/extensions/library
     rake radiant:extensions:library:update
@@ -21,28 +29,28 @@ As usual:
     
 ## Configuration
 
-You need to make sure that paperclipped and taggable load before this does. Multi_site too, if you're using that, and anything that extends paperclipped. This is the sequence I have:
+You need to make sure that paperclipped and taggable load before this does, and anything that adds content types to paperclipped. This is the most awkward sequence I've had to use:
 
-    config.extensions = [ :share_layouts, :multi_site, :taggable, :reader, :reader_group, :paperclipped, :all, :library ]
+    config.extensions = [ :share_layouts, :sites, :taggable, :reader, :reader_group, :paperclipped, :paperclipped_gps, :all, :library ]
     
 ## Library pages
 
-The **LibraryPage** page type is a handy way of catching tag parameters and displaying lists of related items: any path following the address of the page is taken as a slash-separated list of tags, so with a tag page at /archive you can call addresses like:
+The **LibraryPage** page type is a handy cache-friendly way of catching tag parameters and displaying lists of related items: any path following the address of the page is taken as a slash-separated list of tags, so with a tag page at /archive you can call addresses like:
 
     /archive/lasagne/chips/pudding
     
-and the right tags will be retrieved, if they exist. This offers a very easy way to make a proper faceted browser.
+and the right tags will be retrieved, if they exist.
 
 ## Examples
 
 This will display a faceted image browser on a library page:
 
     <r:library:if_requested_tags>
-        <p>Displaying pictures tagged with <r:library:requested_tags /></p>
+      <p>Displaying pictures tagged with <r:library:requested_tags /></p>
     </r:library:if_requested_tags>
     
     <r:library:images:each paginated="true" per_page="20">
-        <r:assets:link size="full"><r:assets:image size="small" /></r:assets:link>
+      <r:assets:link size="full"><r:assets:image size="small" /></r:assets:link>
     </r:library:images:each>
 
     <r:library:tags for="images" />
@@ -50,8 +58,8 @@ This will display a faceted image browser on a library page:
 And this will automate the illustration of any page based on tag-overlap:
 
     <r:related_images:each limit="3">
-        <r:assets:image size="standard" />
-        <p class="caption"><r:assets:caption /></p>
+      <r:assets:image size="standard" />
+      <p class="caption"><r:assets:caption /></p>
     </r:related_images:each>
 
 ## Radius tags
@@ -95,15 +103,10 @@ and for any `*asset*` tag you can substitute an asset type, so this also works:
 
     <r:related_images:each>...</r:related_images:each>
 
-You can use all the usual page and asset tags, and also:
-
-    <r:crumbed_link />
-    
-which I find useful in a list where page names are ambiguous.
-
+Within these lists you can use all the usual page and asset tags.
 
 ## Author and copyright
 
 * William Ross, for spanner. will at spanner.org
-* Copyright 2009 spanner ltd
+* Copyright 2007-2010 spanner ltd
 * released under the same terms as Rails and/or Radiant
