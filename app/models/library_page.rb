@@ -58,26 +58,4 @@ class LibraryPage < Page
   end
   alias_method_chain :url, :tags
   
-  def tagged_pages
-    Page.tagged_with(requested_tags)
-  end
-  
-  def all_pages
-    Page.all
-  end
-  
-  def tagged_assets
-    Asset.tagged_with(requested_tags)
-  end
-  
-  def all_assets
-    Asset.all
-  end
-  
-  Asset.known_types.each do |type|
-    define_method "tagged_#{type.to_s.pluralize}" do
-      Asset.send("#{type.to_s.pluralize}".intern).tagged_with(requested_tags)
-    end
-  end
-  
 end
