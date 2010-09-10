@@ -15,55 +15,72 @@ Fairly mature and in use in the world. I've consolidated radius tags that used t
 
 As usual:
 
-	git submodule add git://github.com/spanner/radiant-library-extension.git vendor/extensions/library
-	rake radiant:extensions:library:update
-	rake radiant:extensions:library:migrate
-	
+    git submodule add git://github.com/spanner/radiant-library-extension.git vendor/extensions/library
+    rake radiant:extensions:library:update
+    rake radiant:extensions:library:migrate
+    
 ## Configuration
 
 You need to make sure that paperclipped and taggable load before this does. Multi_site too, if you're using that, and anything that extends paperclipped. This is the sequence I have:
 
-	config.extensions = [ :share_layouts, :multi_site, :taggable, :reader, :reader_group, :paperclipped, :all, :library ]
-  
-## Examples
-
-See `EXAMPLES.md` for some sample layout and page code.
-
+    config.extensions = [ :share_layouts, :multi_site, :taggable, :reader, :reader_group, :paperclipped, :all, :library ]
+    
 ## Library pages
 
 The **LibraryPage** page type is a handy way of catching tag parameters and displaying lists of related items: any path following the address of the page is taken as a slash-separated list of tags, so with a tag page at /archive you can call addresses like:
 
-	/archive/lasagne/chips/pudding
-	
+    /archive/lasagne/chips/pudding
+    
 and the right tags will be retrieved, if they exist. This offers a very easy way to make a proper faceted browser.
+
+## Examples
+
+This will display a faceted image browser on a library page:
+
+    <r:library:if_requested_tags>
+        <p>Displaying pictures tagged with <r:library:requested_tags /></p>
+    </r:library:if_requested_tags>
+    
+    <r:library:images:each paginated="true" per_page="20">
+        <r:assets:link size="full"><r:assets:image size="small" /></r:assets:link>
+    </r:library:images:each>
+
+    <r:library:tags for="images" />
+    
+And this will automate the illustration of any page based on tag-overlap:
+
+    <r:related_images:each limit="3">
+        <r:assets:image size="standard" />
+        <p class="caption"><r:assets:caption /></p>
+    </r:related_images:each>
 
 ## Radius tags
 
-This extension used to define a ridiculous profusion of tags, so I have slimmed it ruthlessly to make likely uses easy rather than to make unlikely uses possible.
+This extension used to define a ridiculous confusion of tags, so I have slimmed it ruthlessly to make likely uses easy rather than to make all uses possible.
 
 ### Library page tags
 
 The library tags now focus on two tasks: choosing a set of tags and displaying a set of matching objects.
 
-	<r:library:tags />
-	<r:library:tags:each>...</r:library:tags:each>
-	
+    <r:library:tags />
+    <r:library:tags:each>...</r:library:tags:each>
+    
 Displays a list of the tags available. If any tags have been requested, this will show the list of coincident tags (that can be used to limit the result set further). If not it shows all the available tags. If a `for` attribute is set:
 
-	<r:library:tags for="images" />
-	<r:library:tags for="pages" />
+    <r:library:tags for="images" />
+    <r:library:tags for="pages" />
 
 Then we show only the set of tags attached to any object of that kind.
 
-	<r:library:requested_tags />
-	<r:library:requested_tags:each>...</r:library:requested_tags:each>
-	
+    <r:library:requested_tags />
+    <r:library:requested_tags:each>...</r:library:requested_tags:each>
+    
 Displays the currently-limiting set of tags.
 
-	<r:library:pages:each>...</r:library:pages:each>
-	<r:library:assets:each>...</r:library:assets:each>
-	<r:library:images:each>...</r:library:images:each>
-	<r:library:videos:each>...</r:library:videos:each>
+    <r:library:pages:each>...</r:library:pages:each>
+    <r:library:assets:each>...</r:library:assets:each>
+    <r:library:images:each>...</r:library:images:each>
+    <r:library:videos:each>...</r:library:videos:each>
 
 Display the list of (that kind of) objects associated with the current tag set.
 
@@ -71,17 +88,17 @@ Display the list of (that kind of) objects associated with the current tag set.
 
 All the page tags have asset equivalents:
 
-	<r:tags:assets:each tags="foo, bar">...</r:tags:assets:each>
-	<r:related_assets:each>...</r:related_assets:each>
+    <r:tags:assets:each tags="foo, bar">...</r:tags:assets:each>
+    <r:related_assets:each>...</r:related_assets:each>
 
 and for any `*asset*` tag you can substitute an asset type, so this also works:
 
-	<r:related_images:each>...</r:related_images:each>
+    <r:related_images:each>...</r:related_images:each>
 
 You can use all the usual page and asset tags, and also:
 
-	<r:crumbed_link />
-	
+    <r:crumbed_link />
+    
 which I find useful in a list where page names are ambiguous.
 
 
