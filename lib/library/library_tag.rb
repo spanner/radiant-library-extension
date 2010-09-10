@@ -1,5 +1,5 @@
 module Library
-  module Tag
+  module LibraryTag
 
     def assets
       Asset.from_tags([self])
