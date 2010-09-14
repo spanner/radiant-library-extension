@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{radiant-library-extension}
-  s.version = "2.0.0"
+  s.version = "2.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["spanner"]
-  s.date = %q{2010-09-10}
+  s.date = %q{2010-09-14}
   s.description = %q{Combines paperclipped and taggable to create a general purpose faceted library}
   s.email = %q{will@spanner.org}
   s.extra_rdoc_files = [
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.files = [
     "README.md",
      "Rakefile",
+     "VERSION",
      "app/models/library_page.rb",
      "app/views/admin/assets/_edit_metadata.html.haml",
      "app/views/admin/assets/_edit_title.html.haml",
@@ -35,6 +36,8 @@ Gem::Specification.new do |s|
      "lib/library/tagged_asset.rb",
      "lib/tasks/library_extension_tasks.rake",
      "library_extension.rb",
+     "pkg/radiant-library-extension-2.0.0.gem",
+     "radiant-library-extension.gemspec",
      "spec/controllers/library_site_controller_spec.rb",
      "spec/datasets/library_pages_dataset.rb",
      "spec/datasets/library_sites_dataset.rb",

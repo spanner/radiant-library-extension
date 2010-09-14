@@ -192,7 +192,7 @@ module Library
       tag.expand
     end
     tag "library:assets:each" do |tag|
-      tag.render('asset_list', tag.attr.dup, &tag.block)
+      tag.render('asset_list', tag.attr.dup, &tag.block)       # r:page_list is defined in spanner's paperclipped
     end
 
     desc %{
