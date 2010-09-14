@@ -145,6 +145,10 @@ module Library
       Displays a list of the pages associated with the current tag set. If no tags are specified, this will show all pages.
       You can use all the usual r:page tags within the list.
       
+      :by, :order, :limit, :offset, :status and all the usual list-control attributes are obeyed.
+      
+      To paginate the list, set paginated="true" and, optionally, per_page="xx".
+      
       *Usage:* 
       <pre><code>
         <r:library:pages:each><li><r:link /><br /><r:content part="description" /></li></r:library:pages:each>
@@ -173,6 +177,10 @@ module Library
     desc %{
       Displays a list of the assets associated with the current tag set. If no tags are specified, this will show all assets.
       You can use all the usual r:assets tags within the list.
+      
+      By, order, limit and offset attributes are obeyed. The default is to sort by creation date, descending.
+      
+      To paginate the list, set paginated="true" and, optionally, per_page="xx".
       
       *Usage:* 
       <pre><code>
@@ -249,24 +257,65 @@ module Library
         end
       end
 
-      # in the absence of any requested tags we default to all, not none
-
+      # a bit of extra logic so that in the absence of any requested tags we default to all, not none
+      
+      def _default_library_find_options
+        {
+          :by => 'created_at',
+          :order => 'desc'
+        }
+      end
+      
       def _get_pages(tag)
+        options = children_find_options(tag)
         requested = _get_requested_tags(tag)
-        if requested.any?
-          Page.tagged_with(requested)
-        else
-          Page.scoped({})   # there must be a better way to return a new scope
-        end
+        pages = Page.scoped(options)
+        pages = pages.tagged_with(requested) if requested.any?
+        pages
       end
 
       def _get_assets(tag)
+        options = asset_find_options(tag)
         requested = _get_requested_tags(tag)
-        if requested.any?
-          Asset.tagged_with(requested)
-        else
-          Asset.scoped({})
+        assets = Asset.scoped(options)
+        assets = assets.tagged_with(requested) if requested.any?
+        assets
+      end
+      
+      # duplicate of children_find_options except:
+      # no virtual or status options
+      # defaults to chronological descending
+      
+      def asset_find_options(tag)
+        attr = tag.attr.symbolize_keys
+
+        options = {}
+
+        [:limit, :offset].each do |symbol|
+          if number = attr[symbol]
+            if number =~ /^\d{1,4}$/
+              options[symbol] = number.to_i
+            else
+              raise TagError.new("`#{symbol}' attribute of `each' tag must be a positive number between 1 and 4 digits")
+            end
+          end
         end
+
+        by = (attr[:by] || 'created_at').strip
+        order = (attr[:order] || 'desc').strip
+        order_string = ''
+        if self.attributes.keys.include?(by)
+          order_string << by
+        else
+          raise TagError.new("`by' attribute of `each' tag must be set to a valid field name")
+        end
+        if order =~ /^(asc|desc)$/i
+          order_string << " #{$1.upcase}"
+        else
+          raise TagError.new(%{`order' attribute of `each' tag must be set to either "asc" or "desc"})
+        end
+        options[:order] = order_string
+        options
       end
 
     end
