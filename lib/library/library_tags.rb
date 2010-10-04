@@ -53,43 +53,33 @@ module Library
       tag.render('tags:cloud', tag.attr.dup)
     end
     
-    
     desc %{
       Expands if there are is more than one tag to show. 
-      (If there is only one tag coincident with the present set then it offers no reduction).
       
       *Usage:* 
       <pre><code>
         <r:library:if_tags>
           Displaying items tagged with all of <r:requested_tags />
-        <r:library:if_requested_tags>
-      </code></pre>
-    }
-    tag "library:unless_tags" do |tag|
-      tag.locals.tags = _get_coincident_tags(tag)
-      tag.expand if tag.locals.tags.length > 1
-    end
-    desc %{
-      Expands if there are is more than one tag to show. 
-      (If there is only one tag coincident with the present set then it offers no reduction, so we don't show it).
-      
-      *Usage:* 
-      <pre><code>
-        <r:library:if_tags><r:library:tags /></r:library:if_tags>
+        <r:library:if_tags>
       </code></pre>
     }
     tag "library:if_tags" do |tag|
       tag.locals.tags = _get_coincident_tags(tag)
       tag.expand if tag.locals.tags.length > 1
     end
-    
     desc %{
-      Expands if there are is one or no coincident tags to show. 
+      Expands if are is one or no tag to show. 
+      
+      *Usage:* 
+      <pre><code>
+        <r:library:unless_tags>That's your lot.</r:library:unless_tags>
+      </code></pre>
     }
     tag "library:unless_tags" do |tag|
-      tag.expand unless _get_coincident_tags(tag).length > 1
+      tag.locals.tags = _get_coincident_tags(tag)
+      tag.expand if tag.locals.tags.length > 1
     end
-    
+        
     desc %{
       Displays a list of the tags requested by the user.
       To offer links that remove the tag from the current set, these will both work:

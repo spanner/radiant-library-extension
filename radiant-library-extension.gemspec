@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{radiant-library-extension}
-  s.version = "2.0.1"
+  s.version = "2.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["spanner"]
-  s.date = %q{2010-09-14}
+  s.date = %q{2010-09-16}
   s.description = %q{Combines paperclipped and taggable to create a general purpose faceted library}
   s.email = %q{will@spanner.org}
   s.extra_rdoc_files = [
