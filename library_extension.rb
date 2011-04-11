@@ -1,7 +1,7 @@
 require_dependency 'application_controller'
 
 class LibraryExtension < Radiant::Extension
-  version "2.0.3"
+  version "2.0.4"
   description "Combines paperclipped and taggable to create a general purpose faceted library"
   url "http://github.com/spanner/radiant-library-extension"
     

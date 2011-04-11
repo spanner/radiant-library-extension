@@ -7,8 +7,8 @@ begin
     gem.email = "will@spanner.org"
     gem.homepage = "http://github.com/spanner/radiant-library-extension"
     gem.authors = ["spanner"]
-    gem.add_dependency "radiant", ">= 0.9.0"
-    gem.add_dependency "radiant-taggable-extension", ">= 1.2.0"
+    gem.add_dependency "radiant", "~> 0.9.0"
+    gem.add_dependency "radiant-taggable-extension", "~> 1.2.0"
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. This is only required if you plan to package library as a gem."

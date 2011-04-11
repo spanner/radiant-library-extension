@@ -36,7 +36,7 @@ module Library
       You can still display pages associated with those tags, but the list will not include tags that only have pages.
     }
     tag "library:tags" do |tag|
-      tag.locals.tags = _get_coincident_tags(tag)
+      tag.locals.tags = _get_coincident_tags(tag).sort
       if tag.double?
         tag.expand
       else
@@ -64,7 +64,7 @@ module Library
       </code></pre>
     }
     tag "library:if_tags" do |tag|
-      tag.locals.tags = _get_coincident_tags(tag)
+      tag.locals.tags = _get_coincident_tags(tag).sort
       tag.expand if tag.locals.tags.length > 1
     end
     desc %{
@@ -76,7 +76,7 @@ module Library
       </code></pre>
     }
     tag "library:unless_tags" do |tag|
-      tag.locals.tags = _get_coincident_tags(tag)
+      tag.locals.tags = _get_coincident_tags(tag).sort
       tag.expand if tag.locals.tags.length > 1
     end
         
@@ -91,7 +91,7 @@ module Library
       </code></pre>
     }
     tag "library:requested_tags" do |tag|
-      tag.locals.tags = _get_requested_tags(tag)
+      tag.locals.tags = _get_requested_tags(tag).sort
       if tag.double?
         tag.expand
       else
@@ -99,7 +99,7 @@ module Library
       end
     end
     tag "library:requested_tags:each" do |tag|
-      tag.render('tags:each', tag.attr.dup, &tag.block)
+      tag.render('each_tag', tag.attr.dup, &tag.block)
     end
 
     desc %{
@@ -113,7 +113,7 @@ module Library
       </code></pre>
     }
     tag "library:if_requested_tags" do |tag|
-      tag.locals.tags = _get_requested_tags(tag)
+      tag.locals.tags = _get_requested_tags(tag).sort
       tag.expand if tag.locals.tags.any?
     end
     
