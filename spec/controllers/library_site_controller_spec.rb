@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/../spec_helper'
-Radiant::Config['reader.layout'] = 'Main'
 
 describe SiteController do
   dataset :library_pages

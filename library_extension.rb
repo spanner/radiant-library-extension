@@ -1,10 +1,14 @@
 require_dependency 'application_controller'
 
 class LibraryExtension < Radiant::Extension
-  version "2.0.4"
+  version "2.1.0"
   description "Combines paperclipped and taggable to create a general purpose faceted library"
   url "http://github.com/spanner/radiant-library-extension"
-    
+  
+  extension_config do |config|
+    config.gem 'sanitize'
+  end
+  
   def activate
     Asset.send :is_taggable                                            # make assets taggable
     Asset.send :include, Library::TaggedAsset                          # add a keywords method for likeness with pages

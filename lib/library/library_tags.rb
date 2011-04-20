@@ -1,8 +1,39 @@
 module Library
   module LibraryTags
     include Radiant::Taggable
+    include LibraryHelper
   
     class TagError < StandardError; end
+
+    ############### libraryish utility tags that don't really belong here
+    desc %{
+      Truncates the contained text to the specified number of words. Attributes:
+      * `limit` sets the number of words shown. Default is 64.
+      * `ellipsis` is the suffix used to indicate truncation. Default is '&hellip;'
+      * `strip="true"` will cause all html tags to be stripped from the contained text before it is truncated. Default is false.
+    }
+    tag "truncate" do |tag|
+      # truncate_words is in LibraryHelper
+      truncate_words tag.expand, :limit => tag.attr['limit'], :ellipsis => tag.attr['ellipsis'], :strip => tag.attr['strip'] == 'true'
+    end
+
+    desc %{
+      Strips all html tags from the contained text, leaving the text itself unchanged. 
+      Useful when, for example, using a page part to populate a meta tag.
+    }
+    tag "strip" do |tag|
+      # strip_html is in LibraryHelper
+      strip_html tag.expand
+    end
+
+    desc %{
+      Removes all unsafe html tags and attributes from the enclosed text, protecting from cross-site scripting attacks while leaving the text intact.
+    }
+    tag "clean" do |tag|
+      # clean_html is in LibraryHelper
+      clean_html tag.expand
+    end
+
 
     ############### tags for use on library pages
                   # usually to build a faceted browser
@@ -16,13 +47,12 @@ module Library
       Displays a list of the tags that can be used to narrow the set of results displayed. This begins as a list of 
       all available tags, and as they are chosen it shrinks to show only the coincident tags that will further reduce the set.
       
-      This is normally used to display a list or cloud of facets that can be added to a search. The default is to show a cloud.
+      This is normally used to display a list or cloud of facets that can be added to a search.
       
       <pre><code>
         <r:library:tags:each><li><r:tag:link /></li></r:library:tags:each>
         <r:library:tags:list />
         <r:library:tags:cloud />
-        <r:library:tags />
       </code></pre>
 
       To show only those tags attached to a particular kind of object, supply a 'for' parameter. 
@@ -37,20 +67,16 @@ module Library
     }
     tag "library:tags" do |tag|
       tag.locals.tags = _get_coincident_tags(tag).sort
-      if tag.double?
-        tag.expand
-      else
-        tag.render('tags:cloud', tag.attr.dup)
-      end
+      tag.expand
     end
     tag "library:tags:each" do |tag|
-      tag.render('tags:each', tag.attr.dup, &tag.block)
+      tag.render('each_tag', tag.attr.dup, &tag.block)
     end
     tag "library:tags:list" do |tag|
-      tag.render('tags:list', tag.attr.dup)
+      tag.render('tag_list', tag.attr.dup)
     end
     tag "library:tags:cloud" do |tag|
-      tag.render('tags:cloud', tag.attr.dup)
+      tag.render('tag_cloud', tag.attr.dup)
     end
     
     desc %{
